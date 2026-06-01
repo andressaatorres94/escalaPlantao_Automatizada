@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Escala de Plantão TI</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Escala de Plantão TI</h1>
+
+        <div class="card">
+
+            <h2>Cadastrar Funcionário</h2>
+
+            <input
+                id="nome"
+                placeholder="Nome"
+            >
+
+            <input
+                id="matricula"
+                placeholder="Matrícula"
+            >
+
+            <label for="ultimoPlantao">
+                Último Plantão*
+            </label>
+
+            <input
+                id="ultimoPlantao"
+                type="date"
+            >
+
+            <button onclick="cadastrarFuncionario()">
+                Cadastrar
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Gerar Escala</h2>
+
+            <select id="mes">
+
+                <option value="">
+                    Selecione o mês
+                </option>
+
+                <option value="1">Janeiro</option>
+                <option value="2">Fevereiro</option>
+                <option value="3">Março</option>
+                <option value="4">Abril</option>
+                <option value="5">Maio</option>
+                <option value="6">Junho</option>
+                <option value="7">Julho</option>
+                <option value="8">Agosto</option>
+                <option value="9">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+
+            </select>
+
+            <input
+                id="ano"
+                type="number"
+                placeholder="Ano"
+            >
+
+            <button onclick="gerarEscala()">
+                Gerar Escala
+            </button>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Funcionários Cadastrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Nome</th>
+                        <th>Matrícula</th>
+                        <th>Último Plantão</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabelaFuncionarios">
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="card">
+
+            <h2>Escala Gerada</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Data</th>
+                        <th>Funcionário</th>
+                        <th>Matrícula</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabelaEscala">
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>

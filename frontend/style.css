@@ -1,0 +1,161 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    background: #f4f6f9;
+
+    padding: 30px;
+}
+
+.container {
+
+    max-width: 1200px;
+
+    margin: auto;
+}
+
+h1 {
+
+    text-align: center;
+
+    margin-bottom: 30px;
+
+    color: #1f2937;
+}
+
+.card {
+
+    background: white;
+
+    padding: 25px;
+
+    margin-bottom: 25px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 12px
+        rgba(0,0,0,.08);
+}
+
+.card h2 {
+
+    margin-bottom: 20px;
+
+    color: #374151;
+}
+
+.card label {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    margin-top: 8px;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    color: #555;
+}
+
+.card input,
+.card select {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-bottom: 15px;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+.card button {
+
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.card button:hover {
+
+    background: #1d4ed8;
+}
+
+table {
+
+    width: 100%;
+
+    border-collapse: collapse;
+}
+
+table th {
+
+    background: #f3f4f6;
+
+    padding: 12px;
+
+    text-align: left;
+}
+
+table td {
+
+    padding: 12px;
+
+    border-bottom: 1px solid #e5e7eb;
+}
+
+table tr:hover {
+
+    background: #fafafa;
+}
+
+.btn-excluir {
+
+    background: #dc2626;
+
+    color: white;
+
+    border: none;
+
+    padding: 8px 12px;
+
+    border-radius: 6px;
+
+    cursor: pointer;
+}
+
+.btn-excluir:hover {
+
+    background: #b91c1c;
+}
