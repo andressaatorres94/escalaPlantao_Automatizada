@@ -70,7 +70,9 @@ function cadastrarFuncionario(
     const {
         nome,
         matricula,
-        ultimoPlantao} = req.body;
+        ultimoPlantao,
+        indisponibilidades
+    } = req.body;
 
     const funcionarios =lerArquivo();
 
@@ -80,7 +82,7 @@ function cadastrarFuncionario(
         matricula,
         ultimoPlantao,
         totalPlantoes: 0,
-        indisponibilidades: []
+        indisponibilidades: indisponibilidades || []
     };
 
     funcionarios.push(

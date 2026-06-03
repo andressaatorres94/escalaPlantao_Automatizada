@@ -18,33 +18,27 @@
 
             <h2>Cadastrar Funcionário</h2>
 
-            <input
-                id="nome"
-                placeholder="Nome"
+            <input id="nome" placeholder="Nome">
+
+            <input id="matricula" placeholder="Matrícula">
+
+            <label for="ultimoPlantao">Último Plantão*</label>
+
+            <input id="ultimoPlantao" type="date"
             >
+            <label>Indisponibilidades</label>
 
-            <input
-                id="matricula"
-                placeholder="Matrícula"
-            >
+            <div id="listaIndisponibilidades"></div>
 
-            <label for="ultimoPlantao">
-                Último Plantão*
-            </label>
+            <hr>
 
-            <input
-                id="ultimoPlantao"
-                type="date"
-            >
-            <label>Início das Férias</label>
-            <input id="feriasInicio" type="date">
+            <label>Data Início</label>
+            <input type="date" id="inicioIndisponibilidade">
 
-            <label>Fim das Férias</label>
-            <input id="feriasFim" type="date">
+            <label>Data Fim</label>
+            <input type="date" id="fimIndisponibilidade">
 
-            <button onclick="cadastrarFuncionario()">
-                Cadastrar
-            </button>
+            <button onclick="cadastrarFuncionario()">Cadastrar</button>
 
         </div>
         <div class="card">

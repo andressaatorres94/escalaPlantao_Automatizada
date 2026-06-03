@@ -146,38 +146,50 @@ async function gerarEscalaAutomatica(mes,ano) {
         }
 
         const elegiveis =funcionarios.filter(
-                funcionario => {
+            funcionario => {
+
+                // Verifica indisponibilidade por período
+                if (
+                    funcionario.indisponibilidades &&
+                    funcionario.indisponibilidades.length > 0
+                ) {
+
+                    const bloqueado =
+                        funcionario.indisponibilidades.some(periodo => {
+                                return (
+                                    dataISO >= periodo.inicio &&
+                                    dataISO <= periodo.fim
+                                );
+                            }
+                        );
+
+                    if (bloqueado) {
+                        return false;
+                    }
+                }
+
+                // Regra dos 7 dias
+                if (
+                    funcionario.ultimoPlantao
+                ) {
+
+                    const dias =diferencaDias(
+                            data,
+                            new Date(
+                                funcionario.ultimoPlantao
+                            )
+                        );
 
                     if (
-                        funcionario.indisponibilidades &&
-                        funcionario.indisponibilidades.includes(
-                            dataISO
-                        )
+                        dias < 7
                     ) {
                         return false;
                     }
-
-                    if (
-                        funcionario.ultimoPlantao
-                    ) {
-
-                        const dias =diferencaDias(
-                                data,
-                                new Date(
-                                    funcionario.ultimoPlantao
-                                )
-                            );
-
-                        if (
-                            dias < 7
-                        ) {
-                            return false;
-                        }
-                    }
-
-                    return true;
                 }
-            );
+
+                return true;
+            }
+        );
 
         if (
             elegiveis.length === 0
@@ -249,6 +261,9 @@ async function gerarEscalaAutomatica(mes,ano) {
 
     return escala;
 }
+
+
+//
 
 module.exports = {
     gerarEscalaAutomatica

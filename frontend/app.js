@@ -70,11 +70,28 @@ async function carregarFuncionarios() {
 
 async function cadastrarFuncionario() {
 
-    const nome = document.getElementById( "nome").value;
+    const nome = document.getElementById("nome").value;
 
     const matricula = document.getElementById("matricula").value;
 
-    const ultimoPlantao =document.getElementById("ultimoPlantao").value;
+    const ultimoPlantao = document.getElementById("ultimoPlantao").value;
+
+    const inicioIndisponibilidade =document.getElementById("inicioIndisponibilidade").value;
+
+    const fimIndisponibilidade =document.getElementById("fimIndisponibilidade").value;
+
+    let indisponibilidades = [];
+
+    if (
+        inicioIndisponibilidade &&
+        fimIndisponibilidade
+    ) {
+
+        indisponibilidades.push({
+            inicio: inicioIndisponibilidade,
+            fim: fimIndisponibilidade
+        });
+    }
 
     if (
         !nome ||
@@ -88,29 +105,29 @@ async function cadastrarFuncionario() {
 
     try {
 
-        await fetch(`${API}/funcionarios`,{
+        await fetch(
+            `${API}/funcionarios`,
+            {
                 method: "POST",
 
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type":"application/json"
                 },
 
                 body: JSON.stringify({
                     nome,
                     matricula,
                     ultimoPlantao,
-                    feriasInicio,
-                    feriasFim
+                    indisponibilidades
                 })
             }
         );
 
         document.getElementById("nome").value = "";
-
         document.getElementById("matricula").value = "";
-
         document.getElementById("ultimoPlantao").value = "";
+        document.getElementById("inicioIndisponibilidade").value = "";
+        document.getElementById("fimIndisponibilidade").value = "";
 
         carregarFuncionarios();
 
@@ -118,7 +135,8 @@ async function cadastrarFuncionario() {
 
         console.error(erro);
 
-        alert("Erro ao cadastrar funcionário."
+        alert(
+            "Erro ao cadastrar funcionário."
         );
     }
 }
