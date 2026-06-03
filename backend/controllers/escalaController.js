@@ -1,44 +1,60 @@
 const {
     gerarEscalaAutomatica
-} = require(
-    "../services/escalaService"
-);
+} = require("../services/escalaService");
 
-async function gerarEscala(
-    req,
-    res
-) {
+async function gerarEscala(req,res) {
 
     try {
 
-        let {
-            mes,
-            ano
-        } = req.body;
+        const {mes,ano} = req.body;
 
-        const resultado =
-            await gerarEscalaAutomatica(
+        const escala = await gerarEscalaAutomatica(
                 Number(mes),
                 Number(ano)
-            );
-
-        res.json(
-            resultado
         );
+
+        res.json(escala);
 
     } catch (erro) {
 
-        console.error(
-            erro
-        );
+        console.log(erro);
 
         res.status(500).json({
             erro:
-                erro.message
+                "Erro ao gerar escala"
         });
     }
 }
 
+const fs = require("fs");
+const path = require("path");
+
+function buscarEscalaMes(req,res) {
+
+    const {
+        ano,
+        mes
+    } = req.params;
+
+    const arquivo =path.join(__dirname,"../../data/escala.json");
+
+    if (
+        !fs.existsSync(
+            arquivo
+        )
+    ) {
+
+        return res.json([]);
+    }
+
+    const historico =JSON.parse(fs.readFileSync(arquivo,"utf8"));
+
+    const chave =`${ano}-${mes}`;
+
+    res.json(historico[chave] || []);
+}
+
 module.exports = {
-    gerarEscala
+    gerarEscala,
+    buscarEscalaMes
 };

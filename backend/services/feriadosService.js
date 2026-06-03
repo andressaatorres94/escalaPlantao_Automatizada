@@ -1,11 +1,11 @@
 const axios = require("axios");
 
-async function buscarFeriadosNacionais(ano) {
+async function buscarFeriados(ano) {
 
     try {
 
         const response = await axios.get(
-            `https://date.nager.at/api/v3/PublicHolidays/${ano}/BR`
+            `https://brasilapi.com.br/api/feriados/v1/${ano}`
         );
 
         return response.data.map(
@@ -24,5 +24,5 @@ async function buscarFeriadosNacionais(ano) {
 }
 
 module.exports = {
-    buscarFeriadosNacionais
+    buscarFeriados
 };

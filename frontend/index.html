@@ -36,10 +36,38 @@
                 id="ultimoPlantao"
                 type="date"
             >
+            <label>Início das Férias</label>
+            <input id="feriasInicio" type="date">
+
+            <label>Fim das Férias</label>
+            <input id="feriasFim" type="date">
 
             <button onclick="cadastrarFuncionario()">
                 Cadastrar
             </button>
+
+        </div>
+        <div class="card">
+
+            <h2>Funcionários Cadastrados</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Nome</th>
+                        <th>Matrícula</th>
+                        <th>Último Plantão</th>
+                        <th>Ações</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="tabelaFuncionarios">
+                </tbody>
+
+            </table>
 
         </div>
 
@@ -79,34 +107,13 @@
             </button>
 
         </div>
-
-        <div class="card">
-
-            <h2>Funcionários Cadastrados</h2>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-                        <th>Nome</th>
-                        <th>Matrícula</th>
-                        <th>Último Plantão</th>
-                        <th>Ações</th>
-                    </tr>
-
-                </thead>
-
-                <tbody id="tabelaFuncionarios">
-                </tbody>
-
-            </table>
-
-        </div>
-
+       
         <div class="card">
 
             <h2>Escala Gerada</h2>
+            <button onclick="exportarExcel()">
+                Exportar Excel
+            </button>
 
             <table>
 
@@ -126,8 +133,47 @@
             </table>
 
         </div>
+         <div class="card">
+
+            <h2>
+                Consultar Escalas
+            </h2>
+
+            <select id="mesConsulta">
+
+                <option value="">
+                    Selecione o mês
+                </option>
+
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+
+            </select>
+
+            <input
+                id="anoConsulta"
+                type="number"
+                placeholder="Ano"
+            >
+
+            <button onclick="consultarEscala()">
+                Consultar
+            </button>
+
+        </div>
 
     </div>
+    
 
     <script src="app.js"></script>
 

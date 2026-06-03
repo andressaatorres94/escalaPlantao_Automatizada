@@ -2,94 +2,112 @@ const fs = require("fs");
 const path = require("path");
 
 const {
-    buscarFeriadosNacionais
+    buscarFeriados
 } = require("./feriadosService");
 
-function lerJson(caminho) {
-
-    if (!fs.existsSync(caminho)) {
-        return [];
-    }
-
-    const conteudo =
-        fs.readFileSync(
-            caminho,
-            "utf8"
-        );
-
-    if (!conteudo.trim()) {
-        return [];
-    }
-
-    return JSON.parse(conteudo);
-}
-
-function diferencaDias(
-    data1,
-    data2
-) {
+function diferencaDias(data1, data2) {
 
     const umDia =
         1000 * 60 * 60 * 24;
 
     return Math.floor(
-        Math.abs(data1 - data2)
-        / umDia
+        (data1 - data2) / umDia
     );
 }
 
-async function gerarEscalaAutomatica(
-    mes,
-    ano
+//Atualizar plantao
+
+function atualizarUltimosPlantoes(
+    funcionarios,
+    historico
 ) {
 
-    const funcionarios =
-        lerJson(
-            path.join(
-                __dirname,
-                "../../data/funcionarios.json"
-            )
-        );
+    funcionarios.forEach(funcionario => {
 
-    const indisponibilidades =
-        lerJson(
-            path.join(
-                __dirname,
-                "../../data/indisponibilidades.json"
-            )
-        );
+        let ultimoPlantaoHistorico = null;
 
-    const feriadosLocais =
-        lerJson(
-            path.join(
-                __dirname,
-                "../../data/feriados.json"
-            )
-        );
+        Object.values(historico).flat().forEach(plantao =>{
+        
+            if (
+                plantao.matricula !==
+                funcionario.matricula
+            ) {
+                return;
+            }
 
-    const feriadosNacionais =
-        await buscarFeriadosNacionais(
-            ano
-        );
+            const [dia, mes, ano] =plantao.data.split("/");
 
-    const feriadosExtras =
-        feriadosLocais.map(
-            item => item.data
-        );
+            const dataISO =`${ano}-${mes}-${dia}`;
 
-    const todosFeriados = [
-        ...feriadosNacionais,
-        ...feriadosExtras
-    ];
+            if (
+                !ultimoPlantaoHistorico ||
+                dataISO >
+                ultimoPlantaoHistorico
+            ) {
+
+                ultimoPlantaoHistorico =
+                    dataISO;
+            }
+        });
+
+        if (
+            ultimoPlantaoHistorico
+        ) {
+
+            funcionario.ultimoPlantao = ultimoPlantaoHistorico;
+        }
+    });
+}
+
+//Gerar escala automatica
+
+async function gerarEscalaAutomatica(mes,ano) {
+
+    const funcionarios = JSON.parse(fs.readFileSync(
+            path.join(__dirname,"../../data/funcionarios.json"),"utf8"
+        )
+    );
+
+    const arquivoEscala =path.join(__dirname,"../../data/escala.json");
+
+    let historico = {};
+
+    if (
+        fs.existsSync(arquivoEscala)
+    ) {
+
+        const conteudo =fs.readFileSync(arquivoEscala,"utf8");
+
+        if (
+            conteudo.trim()
+        ) {
+
+            historico =JSON.parse(conteudo);
+        }
+    }
+
+    const chaveMes =
+        `${ano}-${String(mes).padStart(2, "0")}`;
+
+    // Se já existir escala do mês
+    if (
+        historico[chaveMes]
+    ) {
+
+        return historico[chaveMes];
+    }
+
+     
+    
+    atualizarUltimosPlantoes(funcionarios,historico);
+
+    const feriadosApi =await buscarFeriados(ano);
+
+    const feriadosLocais =JSON.parse(fs.readFileSync(path.join(__dirname,"../../data/feriados.json"),"utf8"));
 
     const escala = [];
 
-    const ultimoDia =
-        new Date(
-            ano,
-            mes,
-            0
-        ).getDate();
+    const ultimoDia = new Date(ano,mes,0).getDate();
 
     for (
         let dia = 1;
@@ -97,52 +115,42 @@ async function gerarEscalaAutomatica(
         dia++
     ) {
 
-        const data =
-            new Date(
-                ano,
-                mes - 1,
-                dia
-            );
+        const data =new Date(ano,mes - 1,dia);
 
-        const dataISO =
-            data
-                .toISOString()
-                .split("T")[0];
+        const dataISO =`${ano}-${String(mes).padStart(2, "0")}-${String(dia).padStart(2, "0")}`;
 
-        const diaSemana =
-            data.getDay();
+        const diaSemana =data.getDay();
 
-        const ehFimSemana =
+        const ehFinalSemana =
             diaSemana === 0 ||
             diaSemana === 6;
 
-        const ehFeriado =
-            todosFeriados.includes(
+        const ehFeriadoApi =feriadosApi.includes(
                 dataISO
             );
 
+
+        const ehFeriadoLocal =feriadosLocais.some(
+                f => f.data === dataISO
+            );
+
+        const ehFeriado =
+            ehFeriadoApi ||
+            ehFeriadoLocal;
+
         if (
-            !ehFimSemana &&
+            !ehFinalSemana &&
             !ehFeriado
         ) {
             continue;
         }
 
-        const elegiveis =
-            funcionarios.filter(
+        const elegiveis =funcionarios.filter(
                 funcionario => {
 
-                    const bloqueio =
-                        indisponibilidades.find(
-                            item =>
-                                item.matricula ===
-                                funcionario.matricula
-                        );
-
                     if (
-                        bloqueio &&
-                        bloqueio.datas &&
-                        bloqueio.datas.includes(
+                        funcionario.indisponibilidades &&
+                        funcionario.indisponibilidades.includes(
                             dataISO
                         )
                     ) {
@@ -153,8 +161,7 @@ async function gerarEscalaAutomatica(
                         funcionario.ultimoPlantao
                     ) {
 
-                        const dias =
-                            diferencaDias(
+                        const dias =diferencaDias(
                                 data,
                                 new Date(
                                     funcionario.ultimoPlantao
@@ -177,79 +184,68 @@ async function gerarEscalaAutomatica(
         ) {
 
             escala.push({
-                data:
-                    data.toLocaleDateString(
-                        "pt-BR"
-                    ),
-                funcionario:
-                    "SEM PLANTONISTA",
-                matricula:
-                    "-",
-                tipo:
-                    ehFeriado
-                        ? "Feriado"
-                        : "Fim de Semana"
+                data:data.toLocaleDateString("pt-BR"),
+                funcionario:"SEM DISPONIBILIDADE",
+                matricula:"-"
             });
 
             continue;
         }
 
         elegiveis.sort(
-            (a, b) =>
-                (a.totalPlantoes || 0)
-                -
-                (b.totalPlantoes || 0)
+            (a, b) => {
+
+                if (
+                    !a.ultimoPlantao &&
+                    !b.ultimoPlantao
+                ) {
+                    return 0;
+                }
+
+                if (
+                    !a.ultimoPlantao
+                ) {
+                    return -1;
+                }
+
+                if (
+                    !b.ultimoPlantao
+                ) {
+                    return 1;
+                }
+
+                return (
+                    new Date(
+                        a.ultimoPlantao
+                    ) -
+                    new Date(
+                        b.ultimoPlantao
+                    )
+                );
+            }
         );
 
-        const escolhido =
-            elegiveis[0];
+        const escolhido =elegiveis[0];
+
+        escolhido.ultimoPlantao =dataISO;
 
         escolhido.totalPlantoes =
-            (escolhido.totalPlantoes || 0)
-            + 1;
-
-        escolhido.ultimoPlantao =
-            dataISO;
+            (
+                escolhido.totalPlantoes || 0
+            ) + 1;
 
         escala.push({
-            data:
-                data.toLocaleDateString(
-                    "pt-BR"
-                ),
-            funcionario:
-                escolhido.nome,
-            matricula:
-                escolhido.matricula,
-            tipo:
-                ehFeriado
-                    ? "Feriado"
-                    : "Fim de Semana"
+            data:data.toLocaleDateString("pt-BR"),
+            funcionario:escolhido.nome,
+            matricula:escolhido.matricula
         });
     }
 
-    fs.writeFileSync(
-        path.join(
-            __dirname,
-            "../../data/escala.json"
-        ),
-        JSON.stringify(
-            escala,
-            null,
-            4
-        )
-    );
+   
 
-    fs.writeFileSync(
-        path.join(
-            __dirname,
-            "../../data/funcionarios.json"
-        ),
-        JSON.stringify(
-            funcionarios,
-            null,
-            4
-        )
-    );
+    historico[chaveMes] =escala;
+
+    fs.writeFileSync(arquivoEscala,JSON.stringify(historico,null,4));
 
     return escala;
 }

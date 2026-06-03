@@ -1,112 +1,94 @@
 const API = "http://localhost:3000/api";
 
+function formatarData(dataISO) {
+
+    if (!dataISO) {
+        return "-";
+    }
+
+    const [ano, mes, dia] = dataISO.split("-");
+
+    return `${dia}/${mes}/${ano}`;
+}
+
 carregarFuncionarios();
 
 async function carregarFuncionarios() {
 
     try {
 
-        const response =
-            await fetch(
-                `${API}/funcionarios`
-            );
+        const response = await fetch(`${API}/funcionarios`);
 
-        const funcionarios =
-            await response.json();
+        const funcionarios = await response.json();
 
-        const tabela =
-            document.getElementById(
+        const tabela = document.getElementById(
                 "tabelaFuncionarios"
             );
 
         tabela.innerHTML = "";
 
-        funcionarios.forEach(
-            funcionario => {
+        funcionarios.forEach(funcionario => {
+            tabela.innerHTML += `
+                <tr>
 
-                tabela.innerHTML += `
-                    <tr>
+                    <td>
+                        ${funcionario.nome}
+                    </td>
 
-                        <td>
-                            ${funcionario.nome}
-                        </td>
+                    <td>
+                        ${funcionario.matricula}
+                    </td>
 
-                        <td>
-                            ${funcionario.matricula}
-                        </td>
+                    <td>
+                        ${formatarData(funcionario.ultimoPlantao)}
+                    </td>
 
-                        <td>
-                            ${
-                                funcionario.ultimoPlantao
-                                    ? new Date(
-                                        funcionario.ultimoPlantao
-                                      ).toLocaleDateString(
-                                        "pt-BR"
-                                      )
-                                    : "-"
-                            }
-                        </td>
+                    <td>
 
-                        <td>
+                        <button
+                            class="btn-excluir"
+                            onclick="excluirFuncionario(${funcionario.id})"
+                        >
+                            Excluir
+                        </button>
 
-                            <button
-                                class="btn-excluir"
-                                onclick="excluirFuncionario(${funcionario.id})"
-                            >
-                                Excluir
-                            </button>
+                    </td>
 
-                        </td>
-
-                    </tr>
-                `;
-            }
-        );
+                </tr>
+            `;
+        });
 
     } catch (erro) {
 
         console.error(erro);
 
-        alert(
-            "Erro ao carregar funcionários."
-        );
+        alert("Erro ao carregar funcionários.");
     }
 }
 
+//Cadastro dos funcionarios
+
 async function cadastrarFuncionario() {
 
-    const nome =
-        document.getElementById(
-            "nome"
-        ).value;
+    const nome = document.getElementById( "nome").value;
 
-    const matricula =
-        document.getElementById(
-            "matricula"
-        ).value;
+    const matricula = document.getElementById("matricula").value;
 
-    const ultimoPlantao =
-        document.getElementById(
-            "ultimoPlantao"
-        ).value;
+    const ultimoPlantao =document.getElementById("ultimoPlantao").value;
 
     if (
         !nome ||
         !matricula
     ) {
 
-        alert(
-            "Preencha nome e matrícula."
-        );
+        alert("Preencha nome e matrícula.");
 
         return;
     }
 
     try {
 
-        await fetch(
-            `${API}/funcionarios`,
-            {
+        await fetch(`${API}/funcionarios`,{
                 method: "POST",
 
                 headers: {
@@ -117,22 +99,18 @@ async function cadastrarFuncionario() {
                 body: JSON.stringify({
                     nome,
                     matricula,
-                    ultimoPlantao
+                    ultimoPlantao,
+                    feriasInicio,
+                    feriasFim
                 })
             }
         );
 
-        document.getElementById(
-            "nome"
-        ).value = "";
+        document.getElementById("nome").value = "";
 
-        document.getElementById(
-            "matricula"
-        ).value = "";
+        document.getElementById("matricula").value = "";
 
-        document.getElementById(
-            "ultimoPlantao"
-        ).value = "";
+        document.getElementById("ultimoPlantao").value = "";
 
         carregarFuncionarios();
 
@@ -140,12 +118,12 @@ async function cadastrarFuncionario() {
 
         console.error(erro);
 
-        alert(
-            "Erro ao cadastrar funcionário."
+        alert("Erro ao cadastrar funcionário."
         );
     }
 }
 
+//Excluir funcionario
 async function excluirFuncionario(
     id
 ) {
@@ -174,22 +152,68 @@ async function excluirFuncionario(
 
         console.error(erro);
 
-        alert(
-            "Erro ao excluir funcionário."
-        );
+        alert("Erro ao excluir funcionário.");
     }
 }
 
+//Gerar escala de platão
 async function gerarEscala() {
+
+    const mes =document.getElementById("mes").value;
+
+    const ano =document.getElementById("ano").value;
+
+    if (
+        !mes ||
+        !ano
+    ) {
+
+        alert("Informe mês e ano.");
+
+        return;
+    }
+
+    try {
+
+        const response =await fetch(`${API}/escala/gerar`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        mes,
+                        ano
+                    })
+                }
+            );
+
+        const escala = await response.json();
+
+        renderizarEscala(escala);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Erro ao gerar escala.");
+    }
+}
+
+//Consultar escalas
+async function consultarEscala() {
 
     const mes =
         document.getElementById(
-            "mes"
+            "mesConsulta"
         ).value;
 
     const ano =
         document.getElementById(
-            "ano"
+            "anoConsulta"
         ).value;
 
     if (
@@ -206,76 +230,73 @@ async function gerarEscala() {
 
     try {
 
-        const response =
-            await fetch(
-                `${API}/escala/gerar`,
-                {
-                    method: "POST",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body: JSON.stringify({
-                        mes,
-                        ano
-                    })
-                }
-            );
+        const response =await fetch(`${API}/escala/${ano}/${mes}`);
 
         const escala =
             await response.json();
 
-        renderizarEscala(
-            escala
-        );
+        renderizarEscala(escala);
 
     } catch (erro) {
 
-        console.error(erro);
+        console.error(
+            erro
+        );
 
         alert(
-            "Erro ao gerar escala."
+            "Erro ao consultar escala."
         );
     }
 }
 
-function renderizarEscala(
-    escala
-) {
+//Exportar para excel a escala
+function exportarExcel() {
 
-    const tabela =
-        document.getElementById(
-            "tabelaEscala"
-        );
+    window.open(
+        `${API}/exportar/excel`,
+        "_blank"
+    );
+}
+
+function renderizarEscala(escala) {
+
+    const tabela = document.getElementById("tabelaEscala");
 
     tabela.innerHTML = "";
 
-    escala.forEach(
-        item => {
+    if (
+        !escala ||
+        escala.length === 0
+    ) {
 
-            tabela.innerHTML += `
-                <tr>
+        tabela.innerHTML = `
+            <tr>
+                <td colspan="3">
+                    Nenhuma escala gerada.
+                </td>
+            </tr>
+        `;
 
-                    <td>
-                        ${item.data}
-                    </td>
+        return;
+    }
 
-                    <td>
-                        ${item.funcionario}
-                    </td>
+    escala.forEach(item => {
+        tabela.innerHTML += `
+            <tr>
 
-                    <td>
-                        ${item.matricula}
-                    </td>
+                <td>
+                    ${item.data}
+                </td>
 
-                    <td>
-                        ${item.tipo || "-"}
-                    </td>
+                <td>
+                    ${item.funcionario}
+                </td>
 
-                </tr>
-            `;
-        }
-    );
+                <td>
+                    ${item.matricula}
+                </td>
+
+            </tr>
+        `;
+    });
 }
