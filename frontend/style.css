@@ -28,11 +28,16 @@ h1 {
 
     color: #1f2937;
 }
+.card-funcionario,
+.card-escala, .card-consulta, .card-gerar {
 
-.card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
 
     background: white;
-
+    
     padding: 25px;
 
     margin-bottom: 25px;
@@ -44,20 +49,24 @@ h1 {
         rgba(0,0,0,.08);
 }
 
-.card h2 {
+ .card-funcionario h2 ,
+.card-escala h2 , .card-consulta h2, .card-gerar h2{
+    margin: 0;
+    min-width: 300px;
 
-    margin-bottom: 20px;
-
-    color: #374151;
+    margin-bottom: 10px;
+    text-align: left;
+    color: #514c37;
 }
 
-.card label {
+.card-cadastro label, .card-funcionario label,
+.card-escala label {
 
     display: block;
 
-    margin-bottom: 6px;
+    margin-bottom: 0;
 
-    margin-top: 8px;
+    margin-top: 0;
 
     font-size: 14px;
 
@@ -66,14 +75,32 @@ h1 {
     color: #555;
 }
 
-.card input,
-.card select {
+.card-cadastro input, .card-funcionario input,
+.card-escala input, .card-consulta input,.card-gerar input {
 
-    width: 100%;
+   /*display: flex;*/
+    width: 250px;
 
     padding: 12px;
 
-    margin-bottom: 15px;
+    margin-bottom: 0;
+
+    border: 1px solid #a2a2a3;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+}
+
+
+.card-consulta select,
+.card-gerar select {
+
+    width:250px;
+
+    padding: 12px;
+
+    margin-bottom: 0;
 
     border: 1px solid #d1d5db;
 
@@ -82,14 +109,15 @@ h1 {
     font-size: 14px;
 }
 
-.card button {
 
-    width: 100%;
+.card-cadastro button, .card-escala button,
+.card-consulta button, .card-gerar button {
+
+    width: 200px;
+    margin-top: 0;
 
     padding: 12px;
-
-    margin-top: 10px;
-
+    
     border: none;
 
     border-radius: 8px;
@@ -105,11 +133,18 @@ h1 {
     cursor: pointer;
 
     transition: .2s;
+
 }
 
-.card button:hover {
+.card-cadastro button:hover, .card-escala button:hover,
+.card-consulta button:hover, .card-gerar button:hover {
 
-    background: #1d4ed8;
+    background: #053ba0;
+
+}
+
+hr{
+    width: 50%;
 }
 
 table {
@@ -137,25 +172,121 @@ table td {
 
 table tr:hover {
 
-    background: #fafafa;
+    background: #b4d6f5;
 }
 
-.btn-excluir {
+.btn-excluir {    
+    width: 50%;
 
-    background: #dc2626;
+    padding: 12px;
+
+    margin-top: 10px;
+
+    text-align:  center;
+    border: none;
+
+    border-radius: 8px;
+
+    background: #2563eb;
 
     color: white;
 
-    border: none;
+    font-size: 15px;
 
-    padding: 8px 12px;
-
-    border-radius: 6px;
+    font-weight: bold;
 
     cursor: pointer;
+
+    transition: .2s;
 }
 
 .btn-excluir:hover {
 
-    background: #b91c1c;
+    background: #b92804;
+}
+
+
+/*Alinhamento campos de cadastro funcionario*/
+
+.card-cadastro{
+
+    align-items: center;
+    flex-wrap: wrap;
+
+    background: white;
+    
+    padding: 25px;
+
+    margin-bottom: 25px;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 2px 12px
+        rgba(0,0,0,.08);
+    
+}
+
+
+.linha-campos {
+    display: flex;
+    gap: 50px;
+    margin-bottom: 15px;
+}
+.titulo{
+    width: 100%;
+    text-align: justify;
+    color: #514c37;
+   
+}
+
+.campo {
+    flex: 1;
+}
+
+.campo input{
+    width: 100%;
+    
+}
+
+
+.campo-unico {
+    margin-bottom: 20px;
+}
+
+.campo-unico input, .campo input[type="date"] {
+    width: 250px;
+    
+}
+.linha-periodo {
+    display: flex;
+    gap: 40px;
+    margin-top: 20px;
+    align-items: flex-start;
+}
+
+.bloco-plantao {
+    width: 300px;
+}
+
+.bloco-indisponibilidade {
+    flex: 2;
+}
+
+.bloco-indisponibilidade label, .bloco-plantao label{
+    margin-bottom: 10px;
+}
+
+.bloco-indisponibilidade .linha-campos {
+    display: flex;
+    gap: 20px;
+}
+
+.linha-botao {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.linha-botao button {
+    width: 250px;
 }

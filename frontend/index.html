@@ -14,34 +14,64 @@
 
         <h1>Escala de Plantão TI</h1>
 
-        <div class="card">
+        <div class="card-cadastro">
 
-            <h2>Cadastrar Funcionário</h2>
+            <div class=" titulo">
+                <h2>Cadastrar Funcionário</h2>
+            </div>
+            
 
-            <input id="nome" placeholder="Nome">
+            <div class="linha-campos">
+                <div class="campo">
+                    <input id="nome" placeholder="Nome">
+                </div>
+                
 
-            <input id="matricula" placeholder="Matrícula">
+                <div class="campo">
+                    <input id="matricula" placeholder="Matrícula">
+                </div>
+            
+            </div>
+            <div class="linha-periodo">
+                
+                <div class="bloco-plantao">
+                    <label for="ultimoPlantao">Último Plantão*</label>
+                    <input id="ultimoPlantao" type="date">
+                </div>
 
-            <label for="ultimoPlantao">Último Plantão*</label>
+                <div class="bloco-indisponibilidade">
 
-            <input id="ultimoPlantao" type="date"
-            >
-            <label>Indisponibilidades</label>
+                    <label class="titulo-periodo">Período indisponivel (Campo não obrigátório)</label>
+                    
+                    <div id="listaIndisponibilidades"></div>
 
-            <div id="listaIndisponibilidades"></div>
+                        
+                    <div class="linha-campos">
 
-            <hr>
+                        <div class="campo">
+                            <label>Data Início</label>
+                            <input type="date" id="inicioIndisponibilidade">
+                        </div>
 
-            <label>Data Início</label>
-            <input type="date" id="inicioIndisponibilidade">
+                        <div class="campo">
+                            <label>Data Fim</label>
+                            <input type="date" id="fimIndisponibilidade">
+                        </div>
 
-            <label>Data Fim</label>
-            <input type="date" id="fimIndisponibilidade">
+                    </div>
+                </div>
+            
+            </div>
+            
 
-            <button onclick="cadastrarFuncionario()">Cadastrar</button>
+            <div class="linha-botao">
+                <button onclick="cadastrarFuncionario()">Cadastrar</button>
+            </div>
+            
+            
 
         </div>
-        <div class="card">
+        <div class="card-funcionario">
 
             <h2>Funcionários Cadastrados</h2>
 
@@ -52,7 +82,6 @@
                     <tr>
                         <th>Nome</th>
                         <th>Matrícula</th>
-                        <th>Último Plantão</th>
                         <th>Ações</th>
                     </tr>
 
@@ -65,36 +94,33 @@
 
         </div>
 
-        <div class="card">
+        <div class="card-gerar">
 
             <h2>Gerar Escala</h2>
+            
+                 <select id="mes">
 
-            <select id="mes">
+                    <option value="">
+                        Selecione o mês
+                    </option>
 
-                <option value="">
-                    Selecione o mês
-                </option>
+                    <option value="1">Janeiro</option>
+                    <option value="2">Fevereiro</option>
+                    <option value="3">Março</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Maio</option>
+                    <option value="6">Junho</option>
+                    <option value="7">Julho</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Setembro</option>
+                    <option value="10">Outubro</option>
+                    <option value="11">Novembro</option>
+                    <option value="12">Dezembro</option>
 
-                <option value="1">Janeiro</option>
-                <option value="2">Fevereiro</option>
-                <option value="3">Março</option>
-                <option value="4">Abril</option>
-                <option value="5">Maio</option>
-                <option value="6">Junho</option>
-                <option value="7">Julho</option>
-                <option value="8">Agosto</option>
-                <option value="9">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
+                </select>
 
-            </select>
-
-            <input
-                id="ano"
-                type="number"
-                placeholder="Ano"
-            >
+                <input id="ano" type="number" placeholder="Ano">
+            
 
             <button onclick="gerarEscala()">
                 Gerar Escala
@@ -102,13 +128,42 @@
 
         </div>
        
-        <div class="card">
+         <div class="card-consulta">
 
-            <h2>Escala Gerada</h2>
-            <button onclick="exportarExcel()">
-                Exportar Excel
+            <h2>
+                Consultar Escalas
+            </h2>
+            <select id="mesConsulta">
+
+                <option value=""> Selecione o mês </option>
+
+                <option value="01">Janeiro</option>
+                <option value="02">Fevereiro</option>
+                <option value="03">Março</option>
+                <option value="04">Abril</option>
+                <option value="05">Maio</option>
+                <option value="06">Junho</option>
+                <option value="07">Julho</option>
+                <option value="08">Agosto</option>
+                <option value="09">Setembro</option>
+                <option value="10">Outubro</option>
+                <option value="11">Novembro</option>
+                <option value="12">Dezembro</option>
+
+            </select>
+           
+            <input id="anoConsulta" type="number" placeholder="Ano">
+       
+            <button onclick="consultarEscala()">
+                Consultar
             </button>
 
+        </div>
+
+        <div class="card-escala">
+
+            <h2>Escala de Plantão</h2>
+            
             <table>
 
                 <thead>
@@ -126,46 +181,12 @@
 
             </table>
 
-        </div>
-         <div class="card">
-
-            <h2>
-                Consultar Escalas
-            </h2>
-
-            <select id="mesConsulta">
-
-                <option value="">
-                    Selecione o mês
-                </option>
-
-                <option value="01">Janeiro</option>
-                <option value="02">Fevereiro</option>
-                <option value="03">Março</option>
-                <option value="04">Abril</option>
-                <option value="05">Maio</option>
-                <option value="06">Junho</option>
-                <option value="07">Julho</option>
-                <option value="08">Agosto</option>
-                <option value="09">Setembro</option>
-                <option value="10">Outubro</option>
-                <option value="11">Novembro</option>
-                <option value="12">Dezembro</option>
-
-            </select>
-
-            <input
-                id="anoConsulta"
-                type="number"
-                placeholder="Ano"
-            >
-
-            <button onclick="consultarEscala()">
-                Consultar
+            <button onclick="exportarExcel()">
+                Exportar Excel
             </button>
-
         </div>
-
+        
+       
     </div>
     
 

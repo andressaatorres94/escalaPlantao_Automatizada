@@ -40,10 +40,6 @@ async function carregarFuncionarios() {
                     </td>
 
                     <td>
-                        ${formatarData(funcionario.ultimoPlantao)}
-                    </td>
-
-                    <td>
 
                         <button
                             class="btn-excluir"
